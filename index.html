@@ -18,7 +18,7 @@ function setLang(l) {
 
 // Function to fetch prices
 function fetchPrices() {
-  // Fetch USD → PKR
+  // Fetch USD → PKR (live)
   fetch("https://api.exchangerate.host/latest?base=USD&symbols=PKR")
     .then(r => r.json())
     .then(d => {
@@ -26,31 +26,27 @@ function fetchPrices() {
       document.getElementById("usd").innerText =
         lang==='ur' ? `1 ڈالر = ${usdToPkr} روپیہ` : `1 USD = ${usdToPkr} PKR`;
 
-      // Fetch Gold & Silver
-      fetch("https://metals-api.com/api/latest?access_key=demo&base=USD&symbols=XAU,XAG")
-        .then(r => r.json())
-        .then(data => {
-          const goldUsdOz = data.rates.XAU;
-          const silverUsdOz = data.rates.XAG;
+      // Static Gold & Silver values (temporary fix)
+      const goldUsdOz = 1950; // placeholder 1 oz gold USD
+      const silverUsdOz = 24; // placeholder 1 oz silver USD
 
-          const OZ_TO_GRAM = 31.1035;
-          const TOLA_IN_GRAM = 11.664;
+      const OZ_TO_GRAM = 31.1035;
+      const TOLA_IN_GRAM = 11.664;
 
-          const goldPerGram = (goldUsdOz * usdToPkr) / OZ_TO_GRAM;
-          const silverPerGram = (silverUsdOz * usdToPkr) / OZ_TO_GRAM;
+      const goldPerGram = (goldUsdOz * usdToPkr) / OZ_TO_GRAM;
+      const silverPerGram = (silverUsdOz * usdToPkr) / OZ_TO_GRAM;
 
-          const goldTola24k = Math.round(goldPerGram * TOLA_IN_GRAM * 1.0);
-          const goldTola22k = Math.round(goldPerGram * TOLA_IN_GRAM * 0.916);
-          const silverTola = Math.round(silverPerGram * TOLA_IN_GRAM);
+      const goldTola24k = Math.round(goldPerGram * TOLA_IN_GRAM * 1.0);
+      const goldTola22k = Math.round(goldPerGram * TOLA_IN_GRAM * 0.916);
+      const silverTola = Math.round(silverPerGram * TOLA_IN_GRAM);
 
-          document.getElementById("gold").innerText =
-            lang==='ur' ?
-            `24 قیراط: ${goldTola24k} | 22 قیراط: ${goldTola22k} روپیہ` :
-            `24K: ${goldTola24k} PKR | 22K: ${goldTola22k} PKR`;
+      document.getElementById("gold").innerText =
+        lang==='ur' ?
+        `24 قیراط: ${goldTola24k} | 22 قیراط: ${goldTola22k} روپیہ` :
+        `24K: ${goldTola24k} PKR | 22K: ${goldTola22k} PKR`;
 
-          document.getElementById("silver").innerText =
-            lang==='ur' ? `${silverTola} روپیہ` : `${silverTola} PKR`;
-        });
+      document.getElementById("silver").innerText =
+        lang==='ur' ? `${silverTola} روپیہ` : `${silverTola} PKR`;
     });
 }
 
