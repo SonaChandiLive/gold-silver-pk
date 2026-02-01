@@ -16,6 +16,24 @@
 
   <h2 id="usd-title">USD → PKR</h2>
   <p id="usd">1 USD = 283 PKR</p>
+<script>
+function fetchUSD() {
+  fetch("https://api.exchangerate.host/latest?base=USD&symbols=PKR")
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById("usd").innerText = "1 USD = " + d.rates.PKR + " PKR";
+    })
+    .catch(e => {
+      console.log("Error fetching USD:", e);
+    });
+}
+
+// fetch immediately
+fetchUSD();
+
+// refresh every 60 seconds
+setInterval(fetchUSD, 60000);
+</script>
 
   <p style="font-size:12px;">Indicative prices. Not financial advice.</p>
 
