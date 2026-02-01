@@ -5,29 +5,50 @@
   <meta charset="UTF-8">
 </head>
 <body style="font-family: Arial; text-align:center;">
-  <h1>Live Gold & Silver Prices</h1>
+  <h1>Live Gold & Silver Prices | پاکستان</h1>
 
-  <h2>Gold (24K)</h2>
+  <h2>Gold (24K / Tola)</h2>
   <p id="gold">Loading...</p>
 
-  <h2>Silver</h2>
+  <h2>Silver (Tola)</h2>
   <p id="silver">Loading...</p>
 
   <h2>USD → PKR</h2>
   <p id="usd">Loading...</p>
 
   <script>
+    // Fetch USD → PKR first
     fetch("https://api.exchangerate.host/latest?base=USD&symbols=PKR")
       .then(r => r.json())
       .then(d => {
+        const usdToPkr = d.rates.PKR;
         document.getElementById("usd").innerText =
-          "1 USD = " + d.rates.PKR + " PKR";
-      });
+          "1 USD = " + usdToPkr + " PKR";
 
-    document.getElementById("gold").innerText =
-      "Live price will be added";
-    document.getElementById("silver").innerText =
-      "Live price will be added";
+        // Live Gold price (USD/oz) example from free metals API
+        fetch("https://metals-api.com/api/latest?access_key=demo&base=USD&symbols=XAU,XAG")
+          .then(r => r.json())
+          .then(data => {
+            const goldUsdOz = data.rates.XAU;
+            const silverUsdOz = data.rates.XAG;
+
+            const OZ_TO_GRAM = 31.1035;
+            const TOLA_IN_GRAM = 11.664;
+
+            // Convert gold & silver to PKR per tola
+            const goldPerGram = (goldUsdOz * usdToPkr) / OZ_TO_GRAM;
+            const silverPerGram = (silverUsdOz * usdToPkr) / OZ_TO_GRAM;
+
+            const goldTola24k = Math.round(goldPerGram * TOLA_IN_GRAM * 1.0);
+            const goldTola22k = Math.round(goldPerGram * TOLA_IN_GRAM * 0.916);
+            const silverTola = Math.round(silverPerGram * TOLA_IN_GRAM);
+
+            document.getElementById("gold").innerText =
+              "24K: " + goldTola24k + " PKR | 22K: " + goldTola22k + " PKR";
+            document.getElementById("silver").innerText =
+              silverTola + " PKR";
+          });
+      });
   </script>
 
   <p style="font-size:12px;">
