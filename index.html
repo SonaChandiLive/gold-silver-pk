@@ -1,69 +1,57 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Live Gold & Silver Prices Pakistan</title>
-  <meta charset="UTF-8">
-</head>
-<body style="font-family: Arial; text-align:center; padding:20px;">
+<script>
+let lang = 'en'; // default language
 
-  <h1>Live Gold & Silver Prices | پاکستان</h1>
+// Change language function
+function setLang(l) {
+  lang = l;
+  if(lang==='ur'){
+    document.getElementById('heading').innerText = "پاکستان میں سونا اور چاندی کے تازہ نرخ";
+    document.getElementById('gold-title').innerText = "سونا (24 قیراط / تولہ)";
+    document.getElementById('silver-title').innerText = "چاندی (تولہ)";
+    document.getElementById('usd-title').innerText = "ڈالر → روپیہ";
+  } else {
+    document.getElementById('heading').innerText = "Live Gold & Silver Prices | پاکستان";
+    document.getElementById('gold-title').innerText = "Gold (24K / Tola)";
+    document.getElementById('silver-title').innerText = "Silver (Tola)";
+    document.getElementById('usd-title').innerText = "USD → PKR";
+  }
+}
 
-  <h2 id="gold-title">Gold (24K / Tola)</h2>
-  <p id="gold">24K: 234,500 PKR | 22K: 214,900 PKR</p>
-
-  <h2 id="silver-title">Silver (Tola)</h2>
-  <p id="silver">1,800 PKR</p>
-
-  <h2 id="usd-title">USD → PKR</h2>
-  <p id="usd">1 USD = 283 PKR</p>
-
-  <script>
+// Fetch USD → PKR live
 function fetchUSD() {
   fetch("https://api.exchangerate.host/latest?base=USD&symbols=PKR")
     .then(r => r.json())
     .then(d => {
-      document.getElementById("usd").innerText = "1 USD = " + d.rates.PKR + " PKR";
+      const usdRate = d.rates.PKR;
+      document.getElementById("usd").innerText =
+        lang==='ur' ? `1 ڈالر = ${usdRate} روپیہ` : `1 USD = ${usdRate} PKR`;
     })
     .catch(e => {
       console.log("Error fetching USD:", e);
     });
 }
 
-// fetch immediately
-fetchUSD();
-
-// refresh every 60 seconds
-setInterval(fetchUSD, 60000);
-</script>
-
-  <script>
-// Gold & Silver placeholders (safe version)
+// Display Gold & Silver realistic placeholders
 function fetchGoldSilver() {
-  const usdToPkr = parseFloat(document.getElementById("usd").innerText.replace(/[^\d.]/g,"")) || 283;
-
-  const goldUsdOz = 1950;  // placeholder
-  const silverUsdOz = 24;  // placeholder
-
-  const OZ_TO_GRAM = 31.1035;
-  const TOLA_IN_GRAM = 11.664;
-
-  const goldPerGram = (goldUsdOz * usdToPkr) / OZ_TO_GRAM;
-  const silverPerGram = (silverUsdOz * usdToPkr) / OZ_TO_GRAM;
-
-  const goldTola24k = Math.round(goldPerGram * TOLA_IN_GRAM * 1.0);
-  const goldTola22k = Math.round(goldPerGram * TOLA_IN_GRAM * 0.916);
-  const silverTola = Math.round(silverPerGram * TOLA_IN_GRAM);
+  // Prices in PKR per tola
+  const gold24k = 220000;
+  const gold22k = 200000;
+  const silver = 2000;
 
   document.getElementById("gold").innerText =
-    `24K: ${goldTola24k} PKR | 22K: ${goldTola22k} PKR`;
+    lang==='ur' ?
+    `24 قیراط: ${gold24k} | 22 قیراط: ${gold22k} روپیہ` :
+    `24K: ${gold24k} PKR | 22K: ${gold22k} PKR`;
 
-  document.getElementById("silver").innerText = `${silverTola} PKR`;
+  document.getElementById("silver").innerText =
+    lang==='ur' ? `${silver} روپیہ` : `${silver} PKR`;
 }
 
+// Fetch immediately on page load
+fetchUSD();
 fetchGoldSilver();
+
+// Update every 60 seconds
+setInterval(fetchUSD, 60000);
 setInterval(fetchGoldSilver, 60000);
 </script>
-  <p style="font-size:12px;">Indicative prices. Not financial advice.</p>
-
-</body>
-</html>
