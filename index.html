@@ -16,7 +16,8 @@
 
   <h2 id="usd-title">USD → PKR</h2>
   <p id="usd">1 USD = 283 PKR</p>
-<script>
+
+  <script>
 function fetchUSD() {
   fetch("https://api.exchangerate.host/latest?base=USD&symbols=PKR")
     .then(r => r.json())
