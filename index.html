@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Live Gold & Silver Prices Pakistan</title>
+  <meta charset="UTF-8">
+</head>
+<body style="font-family: Arial; text-align:center;">
+  <h1>Live Gold & Silver Prices</h1>
+
+  <h2>Gold (24K)</h2>
+  <p id="gold">Loading...</p>
+
+  <h2>Silver</h2>
+  <p id="silver">Loading...</p>
+
+  <h2>USD → PKR</h2>
+  <p id="usd">Loading...</p>
+
+  <script>
+    fetch("https://api.exchangerate.host/latest?base=USD&symbols=PKR")
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById("usd").innerText =
+          "1 USD = " + d.rates.PKR + " PKR";
+      });
+
+    document.getElementById("gold").innerText =
+      "Live price will be added";
+    document.getElementById("silver").innerText =
+      "Live price will be added";
+  </script>
+
+  <p style="font-size:12px;">
+    Indicative prices. Not financial advice.
+  </p>
+</body>
+</html>
