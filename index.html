@@ -36,6 +36,33 @@ fetchUSD();
 setInterval(fetchUSD, 60000);
 </script>
 
+  <script>
+// Gold & Silver placeholders (safe version)
+function fetchGoldSilver() {
+  const usdToPkr = parseFloat(document.getElementById("usd").innerText.replace(/[^\d.]/g,"")) || 283;
+
+  const goldUsdOz = 1950;  // placeholder
+  const silverUsdOz = 24;  // placeholder
+
+  const OZ_TO_GRAM = 31.1035;
+  const TOLA_IN_GRAM = 11.664;
+
+  const goldPerGram = (goldUsdOz * usdToPkr) / OZ_TO_GRAM;
+  const silverPerGram = (silverUsdOz * usdToPkr) / OZ_TO_GRAM;
+
+  const goldTola24k = Math.round(goldPerGram * TOLA_IN_GRAM * 1.0);
+  const goldTola22k = Math.round(goldPerGram * TOLA_IN_GRAM * 0.916);
+  const silverTola = Math.round(silverPerGram * TOLA_IN_GRAM);
+
+  document.getElementById("gold").innerText =
+    `24K: ${goldTola24k} PKR | 22K: ${goldTola22k} PKR`;
+
+  document.getElementById("silver").innerText = `${silverTola} PKR`;
+}
+
+fetchGoldSilver();
+setInterval(fetchGoldSilver, 60000);
+</script>
   <p style="font-size:12px;">Indicative prices. Not financial advice.</p>
 
 </body>
