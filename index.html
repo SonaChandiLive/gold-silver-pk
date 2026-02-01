@@ -1,23 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Live Gold & Silver Prices Pakistan</title>
+  <title>Live Gold & Silver Prices Pakistan | پاکستان</title>
   <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial; text-align:center; padding:20px; }
+    button { margin:10px; padding:8px 12px; cursor:pointer; }
+  </style>
 </head>
-<body style="font-family: Arial; text-align:center;">
-  <h1>Live Gold & Silver Prices | پاکستان</h1>
+<body>
 
-  <h2>Gold (24K / Tola)</h2>
+  <h1 id="heading">Live Gold & Silver Prices | پاکستان</h1>
+
+  <!-- Language Toggle -->
+  <div>
+    <button onclick="setLang('en')">English</button>
+    <button onclick="setLang('ur')">اردو</button>
+  </div>
+
+  <!-- Gold, Silver, USD -->
+  <h2 id="gold-title">Gold (24K / Tola)</h2>
   <p id="gold">Loading...</p>
 
-  <h2>Silver (Tola)</h2>
+  <h2 id="silver-title">Silver (Tola)</h2>
   <p id="silver">Loading...</p>
 
-  <h2>USD → PKR</h2>
+  <h2 id="usd-title">USD → PKR</h2>
   <p id="usd">Loading...</p>
 
+  <p style="font-size:12px;">Indicative prices. Not financial advice.</p>
+
   <script>
-    // Fetch USD → PKR first
+    let lang = 'en'; // default
+
+    function setLang(l) {
+      lang = l;
+      if(lang==='ur'){
+        document.getElementById('heading').innerText = "پاکستان میں سونا اور چاندی کے تازہ نرخ";
+        document.getElementById('gold-title').innerText = "سونا (24 قیراط / تولہ)";
+        document.getElementById('silver-title').innerText = "چاندی (تولہ)";
+        document.getElementById('usd-title').innerText = "ڈالر → روپیہ";
+      } else {
+        document.getElementById('heading').innerText = "Live Gold & Silver Prices | پاکستان";
+        document.getElementById('gold-title').innerText = "Gold (24K / Tola)";
+        document.getElementById('silver-title').innerText = "Silver (Tola)";
+        document.getElementById('usd-title').innerText = "USD → PKR";
+      }
+    }
+
+    // Fetch USD → PKR
     fetch("https://api.exchangerate.host/latest?base=USD&symbols=PKR")
       .then(r => r.json())
       .then(d => {
@@ -25,7 +56,7 @@
         document.getElementById("usd").innerText =
           "1 USD = " + usdToPkr + " PKR";
 
-        // Live Gold price (USD/oz) example from free metals API
+        // Fetch Gold & Silver (free demo API)
         fetch("https://metals-api.com/api/latest?access_key=demo&base=USD&symbols=XAU,XAG")
           .then(r => r.json())
           .then(data => {
@@ -35,7 +66,6 @@
             const OZ_TO_GRAM = 31.1035;
             const TOLA_IN_GRAM = 11.664;
 
-            // Convert gold & silver to PKR per tola
             const goldPerGram = (goldUsdOz * usdToPkr) / OZ_TO_GRAM;
             const silverPerGram = (silverUsdOz * usdToPkr) / OZ_TO_GRAM;
 
@@ -44,15 +74,15 @@
             const silverTola = Math.round(silverPerGram * TOLA_IN_GRAM);
 
             document.getElementById("gold").innerText =
-              "24K: " + goldTola24k + " PKR | 22K: " + goldTola22k + " PKR";
+              lang==='ur' ?
+              `24 قیراط: ${goldTola24k} | 22 قیراط: ${goldTola22k} روپیہ` :
+              `24K: ${goldTola24k} PKR | 22K: ${goldTola22k} PKR`;
+
             document.getElementById("silver").innerText =
-              silverTola + " PKR";
+              lang==='ur' ? `${silverTola} روپیہ` : `${silverTola} PKR`;
           });
       });
   </script>
 
-  <p style="font-size:12px;">
-    Indicative prices. Not financial advice.
-  </p>
 </body>
 </html>
