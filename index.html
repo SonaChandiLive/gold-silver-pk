@@ -1,57 +1,99 @@
-<script>
-let lang = 'en'; // default language
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Gold & Silver Prices Pakistan</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 20px; }
+    button { padding: 5px 10px; margin: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
 
-// Change language function
-function setLang(l) {
-  lang = l;
-  if(lang==='ur'){
-    document.getElementById('heading').innerText = "پاکستان میں سونا اور چاندی کے تازہ نرخ";
-    document.getElementById('gold-title').innerText = "سونا (24 قیراط / تولہ)";
-    document.getElementById('silver-title').innerText = "چاندی (تولہ)";
-    document.getElementById('usd-title').innerText = "ڈالر → روپیہ";
-  } else {
-    document.getElementById('heading').innerText = "Live Gold & Silver Prices | پاکستان";
-    document.getElementById('gold-title').innerText = "Gold (24K / Tola)";
-    document.getElementById('silver-title').innerText = "Silver (Tola)";
-    document.getElementById('usd-title').innerText = "USD → PKR";
+  <!-- Language Toggle -->
+  <div>
+    <button onclick="setLang('en')">English</button>
+    <button onclick="setLang('ur')">اردو</button>
+  </div>
+
+  <!-- Heading -->
+  <h1 id="heading">Live Gold & Silver Prices | پاکستان</h1>
+
+  <!-- Gold -->
+  <h2 id="gold-title">Gold (24K / Tola)</h2>
+  <p id="gold">24K: 220,000 PKR | 22K: 200,000 PKR</p>
+
+  <!-- Silver -->
+  <h2 id="silver-title">Silver (Tola)</h2>
+  <p id="silver">2,000 PKR</p>
+
+  <!-- USD -->
+  <h2 id="usd-title">USD → PKR</h2>
+  <p id="usd">1 USD = 283 PKR</p>
+
+  <p style="font-size:12px;">Indicative prices. Not financial advice.</p>
+
+  <!-- Script -->
+  <script>
+  window.onload = function() {
+    let lang = 'en'; // default
+
+    function setLang(l) {
+      lang = l;
+      if(lang==='ur'){
+        document.getElementById('heading').innerText = "پاکستان میں سونا اور چاندی کے تازہ نرخ";
+        document.getElementById('gold-title').innerText = "سونا (24 قیراط / تولہ)";
+        document.getElementById('silver-title').innerText = "چاندی (تولہ)";
+        document.getElementById('usd-title').innerText = "ڈالر → روپیہ";
+      } else {
+        document.getElementById('heading').innerText = "Live Gold & Silver Prices | پاکستان";
+        document.getElementById('gold-title').innerText = "Gold (24K / Tola)";
+        document.getElementById('silver-title').innerText = "Silver (Tola)";
+        document.getElementById('usd-title').innerText = "USD → PKR";
+      }
+    }
+
+    // Expose globally for button clicks
+    window.setLang = setLang;
+
+    // Fetch USD → PKR live
+    function fetchUSD() {
+      fetch("https://api.exchangerate.host/latest?base=USD&symbols=PKR")
+        .then(r => r.json())
+        .then(d => {
+          const usdRate = d.rates.PKR;
+          document.getElementById("usd").innerText =
+            lang==='ur' ? `1 ڈالر = ${usdRate} روپیہ` : `1 USD = ${usdRate} PKR`;
+        })
+        .catch(e => {
+          console.log("Error fetching USD:", e);
+        });
+    }
+
+    // Display Gold & Silver realistic placeholders
+    function fetchGoldSilver() {
+      const gold24k = 220000;
+      const gold22k = 200000;
+      const silver = 2000;
+
+      document.getElementById("gold").innerText =
+        lang==='ur' ?
+        `24 قیراط: ${gold24k} | 22 قیراط: ${gold22k} روپیہ` :
+        `24K: ${gold24k} PKR | 22K: ${gold22k} PKR`;
+
+      document.getElementById("silver").innerText =
+        lang==='ur' ? `${silver} روپیہ` : `${silver} PKR`;
+    }
+
+    // Initial fetch
+    fetchUSD();
+    fetchGoldSilver();
+
+    // Auto-update every 60 seconds
+    setInterval(fetchUSD, 60000);
+    setInterval(fetchGoldSilver, 60000);
   }
-}
+  </script>
 
-// Fetch USD → PKR live
-function fetchUSD() {
-  fetch("https://api.exchangerate.host/latest?base=USD&symbols=PKR")
-    .then(r => r.json())
-    .then(d => {
-      const usdRate = d.rates.PKR;
-      document.getElementById("usd").innerText =
-        lang==='ur' ? `1 ڈالر = ${usdRate} روپیہ` : `1 USD = ${usdRate} PKR`;
-    })
-    .catch(e => {
-      console.log("Error fetching USD:", e);
-    });
-}
-
-// Display Gold & Silver realistic placeholders
-function fetchGoldSilver() {
-  // Prices in PKR per tola
-  const gold24k = 220000;
-  const gold22k = 200000;
-  const silver = 2000;
-
-  document.getElementById("gold").innerText =
-    lang==='ur' ?
-    `24 قیراط: ${gold24k} | 22 قیراط: ${gold22k} روپیہ` :
-    `24K: ${gold24k} PKR | 22K: ${gold22k} PKR`;
-
-  document.getElementById("silver").innerText =
-    lang==='ur' ? `${silver} روپیہ` : `${silver} PKR`;
-}
-
-// Fetch immediately on page load
-fetchUSD();
-fetchGoldSilver();
-
-// Update every 60 seconds
-setInterval(fetchUSD, 60000);
-setInterval(fetchGoldSilver, 60000);
-</script>
+</body>
+</html>
